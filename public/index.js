@@ -1,4 +1,19 @@
-// Este é o ponto de entrada de sua aplicação
-import { home } from './pages/home/main.js';
+import routes from './routes.js';
 
-document.querySelector('#root').appendChild(home());
+const main = document.querySelector('#root');
+
+const validateHash = (hash) => (hash === '' ? 'login' : hash.replace('#', ''));
+
+const renderPage = () => {
+  main.innerHTML = '';
+  const page = validateHash(window.location.hash);
+  main.appendChild(routes[page]);
+};
+
+const init = () => window.addEventListener('hashchange', renderPage);
+
+window.addEventListener('load', (event) => {
+  event.preventDefault();
+  renderPage();
+  init();
+});
