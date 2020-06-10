@@ -13,7 +13,7 @@
 
 .container{
   display:flex;
-  flex-direction: column;
+  flex-direction:column;
   border: gray solid 1px;
   width:80%;
   height:100%;
@@ -30,10 +30,12 @@
 }
 
 .btn-social{
+  flex-direction: row;
+  flex-wrap: wrap;
   border-radius: 10px;
-    width: 50%;
-    height: 30px;
-    padding:10px;
+    width: 30%;
+    height: 30%;
+    padding: 3px;
     border: gray solid 1px;
     font-size: 12px;
 }
@@ -55,6 +57,8 @@
 
 .btn-create{
   border-radius: 10px;
+  border: gray solid 1px;
+    font-size: 12px;
 }
 
   .form-register {
@@ -184,6 +188,55 @@
     }
     .button-login {
       width: 30%;
+    }
+    .container{
+      display: flex;
+      justify-content: center;
+      border: gray solid 1px;
+      width:80%;
+      height:100%;
+      padding: 10px;
+      background-color:  rgba(30, 109, 140, 0.527);
+    }
+    
+    .re-post{
+      border-radius: 5px;
+      width: 200px;
+      height: 100px;
+      padding: 10px;
+    }
+    
+    .btn-social{
+      border-radius: 10px;
+        width: 74px;
+        height: 30px;
+        padding: 3px;
+        border: gray solid 1px;
+        font-size: 12px;
+    }
+    
+    .all-posts{
+      flex-direction: row;
+      justify-content: space-evenly;
+      padding:10px;
+    }
+    
+    .post{
+        /* display: flex;
+        justify-content: space-around; */
+        border-radius: 5px;
+        width: 200px;
+        height: 100px;
+        padding: 10px;
+        font-size: 16px;
+      }
+    
+    
+    .btn-create{
+      
+      border-radius: 10px;
+      border: gray solid 1px;
+      font-size: 12px;
     }
     
   }
