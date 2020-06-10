@@ -12,6 +12,7 @@ const renderPage = () => {
 
 const init = () => window.addEventListener('hashchange', renderPage);
 
+
 window.addEventListener('load', (event) => {
   event.preventDefault();
   renderPage();

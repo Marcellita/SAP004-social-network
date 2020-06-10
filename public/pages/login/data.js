@@ -5,8 +5,8 @@ export const authEmailAndPassword = (email, password) => {
     .auth()
     .signInWithEmailAndPassword(email.value, password.value)
     .then(() => {
-      alert(`${welcome(email.value)}`);
-    })
+      window.location='#home';
+      })
     .catch((error) => {
       alert(`${errorMessage(error.message)}`);
     });

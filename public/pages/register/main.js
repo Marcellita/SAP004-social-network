@@ -4,7 +4,6 @@ import { newUser } from './data.js';
 
 export const record = () => {
   const container = document.createElement('div');
-  container.classList.add('div-container-register');
 
     container.innerHTML = `
     <div class=btn-back>
@@ -19,7 +18,7 @@ export const record = () => {
       <input type='email' id='email' class='email input-register register-space' placeholder='Digite o e-mail' required>
       <input type='password' id='password' class='password input-register register-space' placeholder= 'Digite a senha' required>
       <input type='password' id='confirm-password' class='password input-register register-space' placeholder= 'Confirme a senha' required>
-      <button id='record' class='btn-record input-register'>Criar conta</button>
+      <button id='record' class='btn-record input-register'>Criar conta</a></button>
     </form>`;
 
   const email = container.querySelector('#email');
