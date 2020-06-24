@@ -1,87 +1,89 @@
-export const createPost = (post, privacyPost) => {
-    firebase
+export const createPost = (post, privacyPost, url) => {
+  firebase
     .firestore()
     .collection('post')
     .add({
-        name: firebase.auth().currentUser.displayName,
-        timestamps: firebase.firestore.Timestamp.fromDate(new Date()).toDate().toLocaleString('pt-BR'),
-        text: post,
-        user_id: firebase.auth().currentUser.uid,
-        likes: 0,
-        coments: [],
-        privacy: privacyPost,
+      imagem: url,
+      name: firebase.auth().currentUser.displayName,
+      email: firebase.auth().currentUser.displayName,
+      timestamps: firebase.firestore.Timestamp.fromDate(new Date())
+        .toDate()
+        .toLocaleString('pt-BR'),
+      text: post,
+      user_id: firebase.auth().currentUser.uid,
+      likes: 0,
+      coments: [],
+      privacy: privacyPost,
     })
     .then((docRef) => {
-        console.log('Document written with ID: ', docRef.id);
+      console.log('Document written with ID: ', docRef.id);
     })
     .catch((error) => {
-        console.error('Error adding document: ', error);
+      console.error('Error adding document: ', error);
     });
 };
 
-export const readPosts = (callback) => {
-    firebase
-    .firestore()
-    .collection('post')
-    .get()
-    .then((querySnapshot) => {
-        querySnapshot.forEach((post) => {
-        if (
-            post.data().privacy === 'Público' || post.data().user_id === firebase.auth().currentUser.uid
-        ) {
-            callback(post);
+export const readPosts = (callback, callbackUser) => {
+  firebase
+  .firestore()
+  .collection('post')
+  .orderBy('timestamps', 'desc')
+  .limit(20)
+  .get()
+  .then((querySnapshot) => {
+    querySnapshot.forEach((post) => {
+      if (
+        post.data().privacy === 'Público' || post.data().user_id === firebase.auth().currentUser.uid
+      ) {
+        if(post.data().user_id === firebase.auth().currentUser.uid) {
+          callbackUser(post);
+        }else{
+          callback(post);
         }
-        });
+      }
     });
-};
-
-export const deletePost = (postId, callback) => {
-    firebase.firestore().collection('post').doc(postId).delete().then(callback);
-};
-
-export const editAndSavePost = (id, post, privacyPost) => {
-    firebase.firestore().collection('post').doc(id).update({
-    text: post,
-    privacy: privacyPost,
-    });
-};
-
-export const readPosts = (callback) => {
-        firebase
-            .firestore()
-            .collection('post')
-            .limit(20)
-            .orderBy('timestamps', 'desc')
-            .get().then((querySnapshot) => {
-                querySnapshot.forEach((post) => {
-                    callback(post);
-                });
-        
-            });
+  });
 };
 
 export const deletePost = (postId) => {
-firebase.firestore().collection('post').doc(postId).delete().then(doc => {
-    console.log("Document successfully deleted!");
-    console.log(postId);
-});
+  firebase.firestore().collection('post').doc(postId).delete();
+};
 
-}
-/*export const signOut = () => {
-    firebase
+export const editAndSavePost = (id, post, privacyPost) => {
+  firebase.firestore().collection('post').doc(id).update({
+    text: post,
+    privacy: privacyPost,
+  });
+};
+
+export const signOut = () => {
+  firebase
     .auth()
     .signOut()
     .then(() => {
-    window.location = '#login' ;
+      window.location.hash = '#login';
+    });
+};
+
+export const likePosts = (id, likes) => {
+  firebase
+    .firestore()
+    .collection('post')
+    .doc(id)
+    .update({
+      likes: likes + 1,
+    });
+};
+
+export const postImage = (photo, callback) => {
+  let file = photo.files[0];
+  let storageRef = firebase.storage().ref('imagens/' + file.name);
+
+   storageRef.put(file).then(() => {
+    storageRef.getDownloadURL().then((url) => {
+      console.log(url);
+      callback(url);    
     });
     
-}*/
-export const likePosts =  (id,likes) => {
-    firebase.firestore().collection('post').doc(id).update ({
-    likes: likes + 1
-})
-}   
-
-
-
-
+  });
+};

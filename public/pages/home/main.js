@@ -1,108 +1,269 @@
-import { createPost, readPosts, deletePost, editAndSavePost, likePosts } from './data.js';
+import {
+  createPost,
+  readPosts,
+  deletePost,
+  editAndSavePost,
+  likePosts,
+  signOut,
+  postImage,
+} from './data.js';
 
 export const home = () => {
-
   const container = document.createElement('div');
   container.classList.add('div-home');
 
-  container.innerHTML = `  
-  <!--<div class='out'>
-    <input type='image' src='imagens/sign-out.png' class='signout' id='sign-out>
-  </div>-->
-  <div class="btn-back"></div>
-    <div>
-      <img class="wave" src="imagens/perfil-avatar.png">
-    </div>
-    <form>
-      <div id='write-post' class='write-post'></div>
-        <div id='input-post' class='input-post'>
-        <input id='post' class='post' type='text' placeholder='Para onde vamos?'>
-      </div>
-    <div id='container-private' class='container-private'></div>
-    <div id='btn-post' class='btn-post'>
-      <button id='send-post' class='send-post icon-post'>✈️</button>
-      <button id='photo' class='photo icon-post'>📸</button>
-    </div> 
-    <select id='input-private' class='input-private' name='input-private'>
-    <option id='public' class'public'>Público</option> 
-    <option id='private' class='private' selected>Privado</option>
-    </select>
-    </div>  
-      <div id='all-posts' class='all-posts'></div>
-    </form>
+  const validaNomePerfil = () => {
+    if (firebase.auth().currentUser.displayName === '') {
+      return `<p class='name-user'>${firebase.auth().currentUser.email}</p>`;
+    } else {
+      return `<p class='name-user'>${firebase.auth().currentUser.displayName}</p>`;
+    }
+  };
+
+  const validaImgPerfil = () => {
+    if (firebase.auth().currentUser.photoURL === '') {
+      return `<img src='${firebase.auth().currentUser.photoURL}'></img>`;
+    } else {
+      return `<img src='imagens/user.png'></img>`;
+    }
+  };
+
+  container.innerHTML = ` 
+  <div class='menu'> 
+  <input type='checkbox' id='check' class='check'>
+  <label for='check' class='label-icone'>
+    <img src='imagens/icone.png' alt='icone-menu'>
+  </label>
+  <nav class='nav'>
+  <ul class='ul'>
+    <li class='li-link' id='edit-profile'><a class='link'href='/#profile'>Perfil</a></li>
+    <li class='li-link-name'>Travel Time</a></li>
+    <li class='li-link'>
+    <a class='link'>
+    <input type='image' src='imagens/sign-out.png' class='signout' data-id='sign-out'>
+    </a>
+    </li>
+  </ul>
+  </nav>
+  <p class='app-name-home'>Travel Time</p>
+ </div>
+ <form method='post' class='form-home'>
+ <div id='input-post' class='input-post'>
+   <div id='div-perfil' class='div-perfil'>
+   <div class='div-logo-home'> 
+   <img src='imagens/Travel_time.png' class='logo-home'>
+   </div>
+   <div class='div-wave-desk'>
+    
+   </div>
+    <p>Breve descrição</p>
+   </div>
+ </div>
+ <div id='div-form' class='div-form'>
+ ${validaImgPerfil()}
+ ${validaNomePerfil()}
+ <div class='input-post-photo'>
+ <div class='div-photo'>
+  <img src='' width='100%' class='imgPreview'>
+</div>
+ <input id='post' class='post' type='text' placeholder='Para onde vamos?'>
+ </div>
+ <div id='container-private' class='container-private'>
+   <button id='send-post' class='send-post icon-post'>✈️</button>
+   <label for='photo' class='label-camera icon-post'>📷
+  <input type='file' class='photo' id='photo' accept='image/png, image/jpeg, image/jpg'/> 
+  </label>
+   <select id='input-private' class='input-private' name='input-private'>
+     <option id='public' class='public'>Público</option>
+     <option id='private' class='private' selected>Privado</option>
+   </select>
+ </div>
+ 
+ <div id='all-posts' class='all-posts'></div>
+ </div>
+</form>
+<footer class="rodape">
+    Developed by Aline Souza, Marcella Teliceski e Nathalia Bitener
+</footer>
   `;
-  
+
   const post = container.querySelector('#post');
   const sendBtn = container.querySelector('#send-post');
   const allPosts = container.querySelector('#all-posts');
   const privacyPost = container.querySelector('#input-private');
+  const exit = container.querySelector('.signout');
+  const photo = container.querySelector('.photo');
+  let preview = container.querySelector('.imgPreview');
+
+  photo.addEventListener('change', (event) => {
+    let file = event.target.files[0];
+    preview.src = URL.createObjectURL(file);
+    postImage(photo, validarUrl);
+  });
+
+  const validarUrl = (url) => {
+    preview.src = '';
+    preview.src = url;
+  };
 
   sendBtn.addEventListener('click', (event) => {
     event.preventDefault();
-    createPost(post.value, privacyPost.value);
+    createPost(post.value, privacyPost.value, preview.src);
+    preview.src = '';
     post.value = '';
     allPosts.innerHTML = '';
-    readPosts(postTemplate);
+    readPosts(postTemplate, postTemplateUser);
   });
 
-  const postTemplate = (post) => {
+  exit.addEventListener('click', (event) => {
+    event.preventDefault();
+    signOut();
+  });
+
+ const postTemplate = (post) => {
     const now = new Date();
     const spaceTemplate = document.createElement('div');
+
+    const validaImg = () => {
+      if (post.data().imagem !== 'http://localhost:5000/') {
+        return `<img src='${post.data().imagem}' class='div-img-post'></img>`;
+      } else {
+        return `<img src='' class='div-img-post'></img>`;
+      }
+    };
+
+    const validaNome = () => {
+      if (post.data().name === '') {
+        return `<div id='div-name' class='div-name'>${post.data().email}</div>`;
+      } else {
+        return `<div id='div-name' class='div-name'>${post.data().name}</div>`;
+      }
+    };
+
     spaceTemplate.innerHTML = `
-    
-    <div id='div-post' class='div-post'>
-    <div id='container-name' class='container-name'>
-    <div id='div-name' class='div-name'>${post.data().name}</div>
-    <div id='div-delete' class='div-delete'>
-    <button id='save' data-id='${post.id}' class='save'>✔️</button>
-    <button id='edit' data-id='${post.id}' class='edit'>✏️</button> 
-    <button id='delete' data-id='${post.id}' class='delete'>❌</button>
-    </div>
-    </div>
-    <textarea id='text-post' data-id='${post.id}' class='text-post' disabled>${
+  
+  <div id='div-post' class='div-post'>
+  <div id='container-name' class='container-name'>
+  ${validaNome()}
+  </div>
+  <div class ='div-postado' data-id='${post.id}'>
+  ${validaImg()}
+  <textarea data-id='${post.id}' class='text-post' disabled>${
       post.data().text
     }</textarea>
-    <div id='div-container-btn' class='div-container-btn'>
-    <div id='div-btn' class='div-btn'>
-    <button id='curtida' class='curtida icon-post'>❤️${
+  </div>
+  <div id='div-container-btn' class='div-container-btn'>
+  <div id='div-btn' class='div-btn'>
+  <button data-id='${post.id}' class='curtida icon-post'>❤️${
       post.data().likes
     }</button>
-    <button id='comentar' class='comentar icon-post'>💬${
+  <button data-id='${post.id}'  id='comentar-user' class='comentar icon-post'>💬${
       post.data().coments
     }</button>
-    </div>
-    <select id='private' class='select-private' name='input-private'>
-      <option id='option-public' class='public'>Público</option> 
-      <option id='option-private' class='private' selected>Privado</option>
-    </select>
-    <div id='div-date' class=div-date>
-    <p id='privaty' class='privaty'>${post.data().privacy}</p>
-    <p id='date' class='date'>${now.getDate()}/${now.getMonth()}/${now.getFullYear()}</p>
-    </div>
-    </div>
-    </div>
-    `;
+  </div>
+  <div id='div-date' class='div-date'>
+  <p id='privaty' class='privaty'>${post.data().privacy}</p>
+  <p id='date' class='date'>${now.getDate()}/${now.getMonth()}/${now.getFullYear()}</p>
+  </div>
+  </div>
+  </div>
+  `;
 
     allPosts.appendChild(spaceTemplate);
 
-    const btnSave = spaceTemplate.querySelector('#save');
-    const btnEdit = spaceTemplate.querySelector('#edit');
+    const btnLikes = spaceTemplate.querySelector(
+      `.curtida[data-id='${post.id}']`
+    );
+
+    btnLikes.addEventListener('click', () => {
+      const id = btnLikes.dataset.id;
+      likePosts(id, post.data().likes);
+      allPosts.innerHTML = '';
+      readPosts(postTemplate, postTemplateUser);
+    });
+  };
+
+  const postTemplateUser = (post) => {
+    const now = new Date();
+    const spaceTemplate = document.createElement('div');
+
+    const validaImg = () => {
+      if (post.data().imagem !== 'http://localhost:5000/') {
+        return `<img src='${post.data().imagem}' class='div-img-post'></img>`;
+      } else {
+        return `<img src='' class='div-img-post'></img>`;
+      }
+    };
+    const validaNome = () => {
+      if (post.data().name === '') {
+        return `<div id='div-name' class='div-name'>${post.data().email}</div>`;
+      } else {
+        return `<div id='div-name' class='div-name'>${post.data().name}</div>`;
+      }
+    };
+
+    spaceTemplate.innerHTML = `
+  
+  <div id='div-post' class='div-post'>
+  <div id='container-name' class='container-name'>
+  ${validaNome()}
+  <div id='div-delete' class='div-delete'>
+  <button data-id='${post.id}' class='save'>✔️</button>
+  <button data-id='${post.id}' class='edit'>✏️</button> 
+  <button data-id='${post.id}' class='delete'>❌</button>
+  </div>
+  </div>
+  <div class ='div-postado' data-id='${post.id}'>
+  ${validaImg()}
+  <textarea data-id='${post.id}' class='text-post' disabled>${
+      post.data().text
+    }</textarea>
+  </div>
+  </div>
+  <div id='div-container-btn' class='div-container-btn'>
+  <div id='div-btn' class='div-btn'>
+  <button data-id='${post.id}' class='curtida icon-post'>❤️${
+      post.data().likes
+    }</button>
+  <button data-id='${post.id}' id='comentar-user' class='comentar icon-post'>💬${
+      post.data().coments
+    }</button>
+  </div>
+  <select class='select-private' name='input-private'>
+    <option id='option-public' class='public'>Público</option> 
+    <option id='option-private' class='private' selected>Privado</option>
+  </select>
+  <div id='div-date' class='div-date'>
+  <p class='privaty'>${post.data().privacy}</p>
+  <p id='date' class='date'>${now.getDate()}/${now.getMonth()}/${now.getFullYear()}</p>
+  </div>
+  </div>
+  </div>
+  `;
+
+    allPosts.appendChild(spaceTemplate);
+
+    const btnSave = spaceTemplate.querySelector('.save');
+    const btnEdit = spaceTemplate.querySelector('.edit');
     const editText = spaceTemplate.querySelector(
-      `#text-post[data-id='${post.id}']`
+      `.text-post[data-id='${post.id}']`
     );
-    const selectPrivate = spaceTemplate.querySelector('#private');
+    const selectPrivate = spaceTemplate.querySelector('.select-private');
     const btnDelete = spaceTemplate.querySelector(
-      `#delete[data-id='${post.id}']`
+      `.delete[data-id='${post.id}']`
     );
-    const BtnCurtida = spaceTemplate.querySelector('#curtida');
-    const BtnComentar = spaceTemplate.querySelector('#comentar');
+    const btnLikes = spaceTemplate.querySelector(
+      `.curtida[data-id='${post.id}']`
+    );
+    const btnComment = spaceTemplate.querySelector(`#comentar-user[data-id='${post.id}']`);
+    const divDate = spaceTemplate.querySelector('.div-date');
 
     btnDelete.addEventListener('click', (event) => {
       event.preventDefault();
       const id = btnDelete.dataset.id;
-      deletePost(id, validarDelete);
+      deletePost(id);
       allPosts.innerHTML = '';
-      readPosts(postTemplate);
+      readPosts(postTemplate, postTemplateUser);
     });
     btnEdit.addEventListener('click', (event) => {
       event.preventDefault();
@@ -114,62 +275,43 @@ export const home = () => {
       savePost();
     });
 
-    const validarDelete = () => {
-      if (post.data().user_id !== firebase.auth().currentUser.uid) {
-        btnDelete.style.display = 'none';
-      }
-    };
-
+    btnComment.addEventListener('click',(event) =>{
+      event.preventDefault();
+      console.log('clicou')
+      const id = btnComment.dataset.id;
+      comment(id);
+      editAndSavePost(id, editText.value, selectPrivate.value);
+      allPosts.innerHTML = '';
+      readPosts(postTemplate, postTemplateUser);
+    })
     const editPost = () => {
       editText.disabled = false;
       editText.style.color = 'rgba(14, 60, 89, 1)';
       editText.style.background = 'white';
       btnSave.style.display = 'inline-block';
-      BtnCurtida.style.display = 'none';
-      BtnComentar.style.display = 'none';
+      btnLikes.style.display = 'none';
+      btnComment.style.display = 'none';
+      divDate.style.display = 'none';
       selectPrivate.style.display = 'inline-block';
     };
 
     const savePost = () => {
       editText.disabled = true;
-      editText.style.color = 'white';
+      editText.style.color = 'wheat';
       editText.style.background = 'rgba(191, 87, 26, 1)';
       btnSave.style.display = 'none';
-      BtnCurtida.style.display = '';
-      BtnComentar.style.display = '';
+      btnLikes.style.display = '';
+      btnComment.style.display = '';
+      divDate.style.display = '';
       selectPrivate.style.display = 'none';
       const id = editText.dataset.id;
 
       editAndSavePost(id, editText.value, selectPrivate.value);
       allPosts.innerHTML = '';
-      readPosts(postTemplate);
+      readPosts(postTemplate, postTemplateUser);
     };
-
-    // console.log(post.id)
-    const btnLikes =  spaceTemplate.querySelector(`button[data-id='${post.id}']`);
-    // console.log(btnLikes);
-    btnLikes.addEventListener( 'click' , () => {
-      // console.log("like")
-      const id = btnLikes.dataset.id
-      console.log(id);
-      // const id = post.id
-      likePosts(id,post.data().likes);
-      allPosts.innerHTML = '';
-      readPosts(postTemplate);
-    });
-    };
-
-    
-
-  readPosts(postTemplate);
+  };
+  readPosts(postTemplate, postTemplateUser);
 
   return container;
 };
-
-
-/*const validarEdit = () => {
-      if (post.data().user_id !== firebase.auth().currentUser.uid) {
-        edit.style.display = 'none';
-      }
-    }
-*/
