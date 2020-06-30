@@ -81,9 +81,7 @@ export const postImage = (photo, callback) => {
 
    storageRef.put(file).then(() => {
     storageRef.getDownloadURL().then((url) => {
-      console.log(url);
       callback(url);    
     });
-    
   });
 };

@@ -20,7 +20,6 @@ export const profile = () => {
 
     const saveProfile = container.querySelector('#save-profile');
     const inputName = container.querySelector('.new-name');
-    const inputBio = container.querySelector('.bio');
     const inputPhoto = container.querySelector('.photo-perfil');
     const imgPerfil = container.querySelector('.img-perfil');
 
@@ -38,7 +37,7 @@ export const profile = () => {
 
     saveProfile.addEventListener('click', (event) =>{
       event.preventDefault();
-      user(inputName.value, imgPerfil.src, inputBio.value);
+      user(inputName.value, imgPerfil.src);
     })
 
     const backToHome = container.querySelector('#back-to-home');

@@ -1,11 +1,18 @@
 
-export const user = (nome, url, bio) => {
+export const user = (nome, url) => {
   let user = firebase.auth().currentUser;
   user.updateProfile({
     displayName: nome,
     photoURL: url,
-  }).then(function() {
-    console.log('Update successful');
+  }).then(function(nome) {
+    const atualização = document.createElement('div');
+    atualização.innerHTML = `
+    <p id='error-message' class='error.message'></p>`
+   
+    const spaceError = atualização.querySelector('#error-message');
+    spaceError.innerHTML = `funcionou`;
+
+    // console.log('Update successful');
   }).catch(function(error) {
     console.log(error);
   });

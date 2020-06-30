@@ -3,6 +3,8 @@
 ![Optional Text](public/imagens/Travel_time.png)
 
 ***
+Para acessar a Rede Social, [Clique aqui](https://social-network-39e83.web.app/)
+
 
 ## Resumo do projeto
 
@@ -21,6 +23,8 @@ A lógica do projeto foi implementada inteiramente em JavaScript Vanilla e utili
 
 Para o banco de dados foi usado o Firebase, onde criamos o nosso próprio banco de dados, e também com o Firebase fizemos a autenticação, e a manipulação dos dados dos usuários.
 
+## Futuras Implementações 
 
+Futuramente iremos implementar as funcionalidades de comentar os post e a possibilidade de editar a Bio do perfil do Usuário  que nesse momento não foram  possiveis de serem realizadas. 
 
 *** Projeto realizado por Aline Souza, Marcella Teliceski e Nathalia Bitener ***
