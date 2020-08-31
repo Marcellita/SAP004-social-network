@@ -173,8 +173,8 @@ export const home = () => {
     }</button>
   </div>
   <select class='select-private' name='input-private'>
-    <option id='option-public' class='public'>Público</option> 
-    <option id='option-private' class='private' selected>Privado</option>
+    <option id='option-public' class='public' selected>Público</option> 
+    <option id='option-private' class='private'>Privado</option>
   </select>
   <div id='div-date' class='div-date'>
   <p class='privaty'>${post.data().privacy}</p>

@@ -12,6 +12,7 @@
     ]
   },
   "hosting": {
+    "site": "project-social-network",
     "public": "public",
     "ignore": [
       "firebase.json",
