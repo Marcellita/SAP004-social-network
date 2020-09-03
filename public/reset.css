@@ -1,10 +1,7 @@
 html,
 body {
   height: 100%;
-<<<<<<< HEAD
-=======
   width: 100%;
->>>>>>> versão-final
 }
 
 * {
@@ -17,8 +14,4 @@ body {
   box-sizing: border-box;
   z-index: 0;
   outline: none;
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> versão-final
